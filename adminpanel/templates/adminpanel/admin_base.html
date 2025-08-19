@@ -1,0 +1,158 @@
+{% load static %}
+<!DOCTYPE html>
+<html lang="ru">
+<head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <title>{% block title %}Панель администратора{% endblock %}</title>
+
+  <link rel="stylesheet" href="{% static 'adminpanel/css/admin.css' %}">
+  {% block extra_css %}{% endblock %}
+</head>
+<body class="hold-transition skin-light">
+<div class="wrapper">
+
+  <!-- ======= ШАПКА ======= -->
+  <header class="main-header">
+    <a href="{% url 'pages:home' %}" class="logo" aria-label="На главную">
+      <!-- мини-логотип для мини-режима -->
+      <span class="logo-mini">
+        <img src="{% static 'adminpanel/img/logo-mini.svg' %}" alt="МД24">
+      </span>
+      <!-- обычный логотип -->
+      <span class="logo-lg">
+        <img src="{% static 'adminpanel/img/logo.svg' %}" alt="Мой Дом 24">
+      </span>
+    </a>
+
+    <nav class="navbar" role="navigation">
+      <button class="sidebar-toggle" type="button" aria-label="Меню">☰</button>
+      <span class="nav-title">{% block page_title %}Панель администратора{% endblock %}</span>
+
+      <div class="navbar-custom-menu">
+        <ul class="nav navbar-nav">
+          <li class="user-menu">
+            <a href="{% url 'adminpanel:dashboard' %}" class="user-icon" title="Администратор">👤</a>
+          </li>
+          <li class="user-name">
+            {% if request.user.is_authenticated %}
+              {{ request.user.get_full_name|default:request.user.username }}
+            {% else %}
+              Гость
+            {% endif %}
+          </li>
+        </ul>
+      </div>
+    </nav>
+  </header>
+
+  <!-- ======= САЙДБАР ======= -->
+  <aside class="main-sidebar">
+    <section class="sidebar">
+      <ul class="sidebar-menu">
+
+        <li>
+          <a href="{% url 'adminpanel:dashboard' %}" class="{% if request.resolver_match.url_name == 'dashboard' %}active{% endif %}">
+            <span class="ico">📈</span><span>Статистика</span>
+          </a>
+        </li>
+        <li>
+          <a href="{% url 'adminpanel:cashdesk' %}" class="{% if request.resolver_match.url_name == 'cashdesk' %}active{% endif %}">
+            <span class="ico">💵</span><span>Касса</span>
+          </a>
+        </li>
+        <li>
+          <a href="{% url 'adminpanel:pay_receipts' %}" class="{% if request.resolver_match.url_name == 'pay_receipts' %}active{% endif %}">
+            <span class="ico">🧾</span><span>Квитанции на оплату</span>
+          </a>
+        </li>
+        <li>
+          <a href="{% url 'adminpanel:accounts' %}" class="{% if request.resolver_match.url_name == 'accounts' %}active{% endif %}">
+            <span class="ico">🪪</span><span>Лицевые счета</span>
+          </a>
+        </li>
+        <li>
+          <a href="{% url 'adminpanel:apartments' %}" class="{% if request.resolver_match.url_name == 'apartments' %}active{% endif %}">
+            <span class="ico">🏠</span><span>Квартиры</span>
+          </a>
+        </li>
+        <li>
+          <a href="{% url 'adminpanel:owners' %}" class="{% if request.resolver_match.url_name == 'owners' %}active{% endif %}">
+            <span class="ico">👥</span><span>Владельцы квартир</span>
+          </a>
+        </li>
+        <li>
+          <a href="{% url 'adminpanel:houses' %}" class="{% if request.resolver_match.url_name == 'houses' %}active{% endif %}">
+            <span class="ico">🏢</span><span>Дома</span>
+          </a>
+        </li>
+        <li>
+          <a href="{% url 'adminpanel:messages' %}" class="{% if request.resolver_match.url_name == 'messages' %}active{% endif %}">
+            <span class="ico">✉️</span><span>Сообщения</span>
+          </a>
+        </li>
+        <li>
+          <a href="{% url 'adminpanel:requests' %}" class="{% if request.resolver_match.url_name == 'requests' %}active{% endif %}">
+            <span class="ico">🛠</span><span>Заявки вызова мастера</span>
+          </a>
+        </li>
+        <li>
+          <a href="{% url 'adminpanel:meters' %}" class="{% if request.resolver_match.url_name == 'meters' %}active{% endif %}">
+            <span class="ico">🔢</span><span>Показания счётчиков</span>
+          </a>
+        </li>
+
+        <!-- === ГРУППА: Управление сайтом (аккордеон) === -->
+        <li class="menu-group {% if request.resolver_match.url_name == 'site' %}open{% endif %}">
+          <button class="menu-toggle" type="button">
+            <span class="ico">🧭</span><span>Управление сайтом</span><span class="arrow">▸</span>
+          </button>
+          <ul class="submenu">
+            <li>
+              <a href="{% url 'adminpanel:site' %}" class="{% if request.resolver_match.url_name == 'site' %}active{% endif %}">
+                Настройки сайта
+              </a>
+            </li>
+          </ul>
+        </li>
+
+        <!-- === ГРУППА: Настройки системы (аккордеон) === -->
+        <li class="menu-group {% if request.resolver_match.url_name in 'services tariffs roles user_list requisites pay_items' %}open{% endif %}">
+          <button class="menu-toggle" type="button">
+            <span class="ico">⚙️</span><span>Настройки системы</span><span class="arrow">▸</span>
+          </button>
+          <ul class="submenu">
+            <li><a href="#">Услуги</a></li>
+            <li><a href="#">Тарифы</a></li>
+            <li><a href="{% url 'adminpanel:role_matrix' %}">Роли</a></li>
+            <li><a href="{% url 'adminpanel:user_list' %}" class="{% if request.resolver_match.url_name == 'user_list' %}active{% endif %}">Пользователи</a></li>
+            <li><a href="#">Платежные реквизиты</a></li>
+            <li><a href="#">Статьи платежей</a></li>
+          </ul>
+        </li>
+
+      </ul>
+    </section>
+  </aside>
+
+  <!-- ======= КОНТЕНТ ======= -->
+  <div class="content-wrapper">
+    <div class="card">
+      <section class="content">
+        {% block content %}{% endblock %}
+      </section>
+    </div>
+  </div>
+
+  <!-- ======= ПОДВАЛ ======= -->
+  <footer class="main-footer">
+    <div class="pull-right hidden-xs">v0.1</div>
+    <strong>© {% now "Y" %} Мой Дом 24.</strong>
+  </footer>
+
+</div>
+
+<script src="{% static 'adminpanel/js/admin.js' %}"></script>
+{% block extra_js %}{% endblock %}
+</body>
+</html>

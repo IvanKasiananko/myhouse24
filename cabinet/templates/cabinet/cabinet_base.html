@@ -1,0 +1,135 @@
+{% load static %}
+<!DOCTYPE html>
+<html lang="ru">
+<head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <title>{% block title %}Личный кабинет{% endblock %}</title>
+
+  <link rel="stylesheet" href="{% static 'cabinet/css/cabinet.css' %}">
+  {% block extra_css %}{% endblock %}
+</head>
+<body class="hold-transition skin-light">
+<div class="wrapper">
+
+  <!-- ======= ШАПКА ======= -->
+  <header class="main-header">
+{#    <a href="{% url 'pages:home' %}" class="logo" aria-label="На главную">#}
+{#      <span class="logo-mini"></span>#}
+{#      <span class="logo-lg">#}
+{#        <img src="{% static 'pages/img/logo.svg' %}" alt="Мой Дом 24">#}
+{#      </span>#}
+{#    </a>#}
+  <a href="{% url 'pages:home' %}" class="logo" aria-label="На главную">
+  <!-- мини-логотип для мини-режима -->
+  <span class="logo-mini">
+    <img src="{% static 'cabinet/img/logo-mini.svg' %}" alt="МД24">
+  </span>
+  <!-- обычный логотип -->
+  <span class="logo-lg">
+    <img src="{% static 'cabinet/img/logo.svg' %}" alt="Мой Дом 24">
+  </span>
+</a>
+
+    <nav class="navbar" role="navigation">
+      <!-- ☰ — desktop: mini-mode; mobile: off-canvas -->
+      <button class="sidebar-toggle" type="button" aria-label="Меню">☰</button>
+
+      <!-- Заголовок сразу за бургером обычным шрифтом -->
+      <span class="nav-title">{% block page_title %}Личный кабинет{% endblock %}</span>
+
+      <div class="navbar-custom-menu">
+        <ul class="nav navbar-nav">
+          <li><a href="#" title="Уведомления">🔔</a></li>
+          <li class="user-menu">
+            <span class="user-name">👤
+              {% if request.user.is_authenticated %}
+                {% if request.user.get_full_name %}
+                  {{ request.user.get_full_name }}
+                {% else %}
+                  {{ request.user.username|default:"Гость" }}
+                {% endif %}
+              {% else %}
+                Гость
+              {% endif %}
+            </span>
+          </li>
+        </ul>
+      </div>
+    </nav>
+  </header>
+
+  <!-- ======= САЙДБАР ======= -->
+  <aside class="main-sidebar">
+    <section class="sidebar">
+      <ul class="sidebar-menu">
+
+        <!-- Сводка -->
+        <li class="menu-group {% if request.resolver_match.url_name == 'dashboard' %}open{% endif %}">
+          <button class="menu-toggle" type="button" aria-expanded="false">
+            <span class="ico">📊</span><span>Сводка</span><span class="arrow">▸</span>
+          </button>
+          <ul class="submenu">
+            <li>
+              <a href="{% url 'cabinet:dashboard' %}"
+                 class="{% if request.resolver_match.url_name == 'dashboard' %}active{% endif %}">
+                Общая сводка
+              </a>
+            </li>
+            <li><span class="muted">Мои объекты (скоро)</span></li>
+          </ul>
+        </li>
+
+        <!-- Квитанции -->
+        <li class="menu-group {% if request.resolver_match.url_name == 'bills_list' or request.resolver_match.url_name == 'bills_paid' or request.resolver_match.url_name == 'bills_overdue' %}open{% endif %}">
+          <button class="menu-toggle" type="button" aria-expanded="false">
+            <span class="ico">🧾</span><span>Квитанции</span><span class="arrow">▸</span>
+          </button>
+          <ul class="submenu">
+            <li><a href="{% url 'cabinet:bills_list' %}" class="{% if request.resolver_match.url_name == 'bills_list' %}active{% endif %}">Все квитанции</a></li>
+            <li><a href="{% url 'cabinet:bills_paid' %}" class="{% if request.resolver_match.url_name == 'bills_paid' %}active{% endif %}">Оплаченные</a></li>
+            <li><a href="{% url 'cabinet:bills_overdue' %}" class="{% if request.resolver_match.url_name == 'bills_overdue' %}active{% endif %}">Просроченные</a></li>
+          </ul>
+        </li>
+
+        <!-- Тарифы -->
+        <li class="menu-group {% if request.resolver_match.url_name == 'tariffs_active' or request.resolver_match.url_name == 'tariffs_archive' %}open{% endif %}">
+          <button class="menu-toggle" type="button" aria-expanded="false">
+            <span class="ico">💲</span><span>Тарифы</span><span class="arrow">▸</span>
+          </button>
+          <ul class="submenu">
+            <li><a href="{% url 'cabinet:tariffs_active' %}" class="{% if request.resolver_match.url_name == 'tariffs_active' %}active{% endif %}">Мои тарифы</a></li>
+            <li><a href="{% url 'cabinet:tariffs_archive' %}" class="{% if request.resolver_match.url_name == 'tariffs_archive' %}active{% endif %}">История</a></li>
+          </ul>
+        </li>
+
+        <!-- Одиночные пункты -->
+        <li><a href="{% url 'cabinet:messages_list' %}"><span class="ico">✉️</span><span>Сообщения</span></a></li>
+        <li><a href="{% url 'cabinet:service_request' %}"><span class="ico">🛠</span><span>Вызов мастера</span></a></li>
+        <li><a href="{% url 'cabinet:profile' %}"><span class="ico">👤</span><span>Профиль</span></a></li>
+
+      </ul>
+    </section>
+  </aside>
+
+  <!-- ======= КОНТЕНТ ======= -->
+  <div class="content-wrapper">
+    <div class="card">
+      <section class="content">
+        {% block page_content %}{% endblock %}
+      </section>
+    </div>
+  </div>
+
+  <!-- ======= ПОДВАЛ ======= -->
+  <footer class="main-footer">
+    <div class="pull-right hidden-xs">v0.1</div>
+    <strong>© {% now "Y" %} Мой Дом 24.</strong>
+  </footer>
+
+</div>
+
+<script src="{% static 'cabinet/js/cabinet.js' %}"></script>
+{% block extra_js %}{% endblock %}
+</body>
+</html>

@@ -1,0 +1,56 @@
+{% load static %}
+<!DOCTYPE html>
+<html lang="ru">
+<head>
+    <meta charset="UTF-8"/>
+    <meta name="viewport" content="width=device-width, initial-scale=1"/>
+    <title>{% block title %}Управляющая Компания «Укрсвет»{% endblock %}</title>
+
+    <link rel="stylesheet" href="{% static 'pages/css/style.css' %}">
+    {% block extra_css %}{% endblock %}
+</head>
+<body>
+
+<header class="topbar">
+    <div class="container topbar__row">
+        <a class="brand" href="{% url 'pages:home' %}">
+            <img src="{% static 'pages/img/logo.svg' %}" alt="Укрсвет"/>
+        </a>
+
+        <nav id="main-nav" class="nav">
+            <a href="{% url 'pages:home' %}">Главная</a>
+            <a href="{% url 'pages:about' %}">О нас</a>
+            <a href="{% url 'pages:services' %}">Услуги</a>
+            <a href="{% url 'pages:terms' %}">Условия приобретения</a>
+            <a href="{% url 'pages:contacts' %}">Контакты</a>
+            <a class="login" href="{% url 'pages:home' %}">🗝 Вход</a>
+        </nav>
+
+        <button class="burger" aria-label="Меню"
+                onclick="document.getElementById('main-nav').classList.toggle('open')">
+            ☰
+        </button>
+    </div>
+</header>
+
+<main>
+    <section class="hero">
+        <div class="container">
+            {% block header %}
+                <h1 class="hero__title">Управляющая Компания «Укрсвет»</h1>
+            {% endblock %}
+            {% block content %}{% endblock %}
+        </div>
+    </section>
+</main>
+
+<footer class="footer">
+    <div class="container">
+        <p>© {% now "Y" %} Укрсвет</p>
+    </div>
+</footer>
+
+<script src="{% static 'pages/js/main.js' %}"></script>
+{% block extra_js %}{% endblock %}
+</body>
+</html>

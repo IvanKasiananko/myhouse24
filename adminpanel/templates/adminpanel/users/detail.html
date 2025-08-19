@@ -1,0 +1,18 @@
+{% extends "adminpanel/admin_base.html" %}
+{% block page_title %}Пользователь{% endblock %}
+{% block content %}
+<div class="content-header">
+  <h2>{{ user.get_full_name|default:user.username }}</h2>
+  <div class="breadcrumbs">
+    <a href="{% url 'adminpanel:dashboard' %}">Главная</a> →
+    <a href="{% url 'adminpanel:user_list' %}">Пользователи</a> →
+    <span class="current">{{ user.username }}</span>
+  </div>
+</div>
+<div class="form-card">
+  <div><b>Роль:</b> {{ user.role|default:"—" }}</div>
+  <div><b>Телефон:</b> {{ user.phone|default:"—" }}</div>
+  <div><b>Email:</b> {{ user.email|default:"—" }}</div>
+  <div><b>Статус:</b> {% if user.is_active %}Активен{% else %}Отключен{% endif %}</div>
+</div>
+{% endblock %}
