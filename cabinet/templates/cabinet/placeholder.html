@@ -1,11 +1,11 @@
 {% extends "cabinet/cabinet_base.html" %}
-{% block title %}{{ title }} — myhouse24{% endblock %}
+{% block title %}
+    {{ title }} — myhouse24
+{% endblock title %}
 {% block content %}
-  <div class="d-flex align-items-center justify-content-between mb-3">
-    <h1 class="h4 m-0">{{ title }}</h1>
-    <span class="badge text-bg-secondary">Заглушка</span>
-  </div>
-  <div class="alert alert-info">
-    Раздел в разработке. Здесь скоро появится функционал.
-  </div>
-{% endblock %}
+    <div class="d-flex align-items-center justify-content-between mb-3">
+        <h1 class="h4 m-0">{{ title }}</h1>
+        <span class="badge text-bg-secondary">Заглушка</span>
+    </div>
+    <div class="alert alert-info">Раздел в разработке. Здесь скоро появится функционал.</div>
+{% endblock content %}

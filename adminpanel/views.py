@@ -1,7 +1,6 @@
 from django.shortcuts import render, redirect
-from django.urls import reverse_lazy, reverse
+from django.urls import reverse_lazy
 from django.views.generic import TemplateView, CreateView, DetailView, UpdateView
-from django.contrib.auth.mixins import LoginRequiredMixin
 from ajax_datatable.views import AjaxDatatableView
 from django.db.models import Q
 from django.contrib import messages
@@ -10,8 +9,9 @@ from core.models import User, Role, Permission
 from .forms import UserCreateForm
 
 
-class UsersPageView( TemplateView):
-    """ Просто отдаём шаблон со столом и фильтрами. """
+class UsersPageView(TemplateView):
+    """Просто отдаём шаблон со столом и фильтрами."""
+
     template_name = "adminpanel/users/list_ajax.html"
     login_url = reverse_lazy("login")
 
@@ -21,8 +21,9 @@ class UsersPageView( TemplateView):
         return ctx
 
 
-class UsersAjaxDataView( AjaxDatatableView):
-    """ Серверная выдача для DataTables. """
+class UsersAjaxDataView(AjaxDatatableView):
+    """Серверная выдача для DataTables."""
+
     model = User
     title = "Users"
     initial_order = [["id", "asc"]]
@@ -33,11 +34,35 @@ class UsersAjaxDataView( AjaxDatatableView):
     column_defs = [
         {"name": "id", "visible": True, "searchable": False, "orderable": True},
         {"name": "full_name", "visible": True, "searchable": True, "orderable": True},
-        {"name": "role__name", "title": "Роль", "visible": True, "searchable": True, "orderable": True},
+        {
+            "name": "role__name",
+            "title": "Роль",
+            "visible": True,
+            "searchable": True,
+            "orderable": True,
+        },
         {"name": "phone", "visible": True, "searchable": True, "orderable": False},
-        {"name": "email", "title": "Email", "visible": True, "searchable": True, "orderable": False},
-        {"name": "is_active", "title": "Статус", "visible": True, "searchable": False, "orderable": False},
-        {"name": "actions", "title": "Действия", "searchable": False, "orderable": False, "className": "text-end"},
+        {
+            "name": "email",
+            "title": "Email",
+            "visible": True,
+            "searchable": True,
+            "orderable": False,
+        },
+        {
+            "name": "is_active",
+            "title": "Статус",
+            "visible": True,
+            "searchable": False,
+            "orderable": False,
+        },
+        {
+            "name": "actions",
+            "title": "Действия",
+            "searchable": False,
+            "orderable": False,
+            "className": "text-end",
+        },
     ]
 
     def get_initial_queryset(self, request=None):
@@ -45,17 +70,17 @@ class UsersAjaxDataView( AjaxDatatableView):
 
     # поддержка фильтров сверху (имена должны совпасть с параметрами в ajax.data)
     def filter_queryset(self, params, qs):
-        q_name   = params.get("q_name")
-        q_phone  = params.get("q_phone")
-        q_email  = params.get("q_email")
-        q_role   = params.get("q_role")
+        q_name = params.get("q_name")
+        q_phone = params.get("q_phone")
+        q_email = params.get("q_email")
+        q_role = params.get("q_role")
         q_status = params.get("q_status")
 
         if q_name:
             qs = qs.filter(
-                Q(first_name__icontains=q_name) |
-                Q(last_name__icontains=q_name)  |
-                Q(username__icontains=q_name)
+                Q(first_name__icontains=q_name)
+                | Q(last_name__icontains=q_name)
+                | Q(username__icontains=q_name)
             )
         if q_phone:
             qs = qs.filter(phone__icontains=q_phone)
@@ -76,23 +101,25 @@ class UsersAjaxDataView( AjaxDatatableView):
             full_name = u.get_full_name() or u.username
             status_html = (
                 '<span class="badge users-badge users-badge--green">Активен</span>'
-                if u.is_active else
-                '<span class="badge users-badge users-badge--red">Отключен</span>'
+                if u.is_active
+                else '<span class="badge users-badge users-badge--red">Отключен</span>'
             )
             actions_html = (
                 f'<a class="act" title="Просмотр" href="{reverse_lazy("adminpanel:user_detail", args=[u.pk])}">👁</a>'
                 f'<a class="act" title="Редактировать" href="#">✎</a>'
                 f'<a class="act danger" title="Удалить" href="#">🗑</a>'
             )
-            results.append({
-                "id": u.id,
-                "full_name": f'<a class="users-name" href="{reverse_lazy("adminpanel:user_detail", args=[u.pk])}">{full_name}</a>',
-                "role__name": u.role.name if u.role_id else "—",
-                "phone": u.phone or "—",
-                "email": u.email or "—",
-                "is_active": status_html,
-                "actions": actions_html,
-            })
+            results.append(
+                {
+                    "id": u.id,
+                    "full_name": f'<a class="users-name" href="{reverse_lazy("adminpanel:user_detail", args=[u.pk])}">{full_name}</a>',
+                    "role__name": u.role.name if u.role_id else "—",
+                    "phone": u.phone or "—",
+                    "email": u.email or "—",
+                    "is_active": status_html,
+                    "actions": actions_html,
+                }
+            )
         return results
 
 
@@ -109,6 +136,7 @@ class UserCreateView(CreateView):
     template_name = "adminpanel/users/create.html"
     success_url = reverse_lazy("adminpanel:user_list")
     login_url = reverse_lazy("login")
+
 
 class RoleMatrixView(TemplateView):
     template_name = "adminpanel/roles/matrix.html"
@@ -136,11 +164,13 @@ class RoleMatrixView(TemplateView):
         messages.success(request, "Изменения сохранены ✅")  # ✅ теперь ок
         return redirect("adminpanel:role_matrix")
 
+
 class RoleEditView(UpdateView):
     """
     Опционально: быстрый экран редактирования одной роли.
     Выводит те же чекбоксы, но только для одной роли.
     """
+
     model = Role
     fields = ["name", "permissions"]
     template_name = "adminpanel/roles/edit.html"
@@ -150,6 +180,8 @@ class RoleEditView(UpdateView):
         ctx = super().get_context_data(**kwargs)
         ctx["perms"] = Permission.objects.order_by("name")
         return ctx
+
+
 def dashboard(request):
     return render(request, "adminpanel/placeholder.html", {"title": "Дашборд"})
 
@@ -159,7 +191,9 @@ def cashdesk(request):
 
 
 def pay_receipts(request):
-    return render(request, "adminpanel/placeholder.html", {"title": "Квитанции на оплату"})
+    return render(
+        request, "adminpanel/placeholder.html", {"title": "Квитанции на оплату"}
+    )
 
 
 def accounts(request):
@@ -171,7 +205,9 @@ def apartments(request):
 
 
 def owners(request):
-    return render(request, "adminpanel/placeholder.html", {"title": "Владельцы квартир"})
+    return render(
+        request, "adminpanel/placeholder.html", {"title": "Владельцы квартир"}
+    )
 
 
 def houses(request):
@@ -183,20 +219,30 @@ def messages1(request):
 
 
 def requests(request):
-    return render(request, "adminpanel/placeholder.html", {"title": "Заявки вызова мастера"})
+    return render(
+        request, "adminpanel/placeholder.html", {"title": "Заявки вызова мастера"}
+    )
 
 
 def meters(request):
-    return render(request, "adminpanel/placeholder.html", {"title": "Показания счётчиков"})
+    return render(
+        request, "adminpanel/placeholder.html", {"title": "Показания счётчиков"}
+    )
 
 
 def site(request):
-    return render(request, "adminpanel/placeholder.html", {"title": "Управление сайтом"})
+    return render(
+        request, "adminpanel/placeholder.html", {"title": "Управление сайтом"}
+    )
 
 
 def settings(request):
-    return render(request, "adminpanel/placeholder.html", {"title": "Настройки системы"})
+    return render(
+        request, "adminpanel/placeholder.html", {"title": "Настройки системы"}
+    )
 
 
 def profile(request):
-    return render(request, "adminpanel/placeholder.html", {"title": "Профиль администратора"})
+    return render(
+        request, "adminpanel/placeholder.html", {"title": "Профиль администратора"}
+    )

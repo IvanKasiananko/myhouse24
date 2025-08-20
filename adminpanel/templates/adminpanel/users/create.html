@@ -1,113 +1,102 @@
 {% extends "adminpanel/admin_base.html" %}
-
-{% block page_title %}Новый пользователь{% endblock %}
-
+{% block page_title %}
+    Новый пользователь
+{% endblock page_title %}
 {% block content %}
-<!-- Шапка страницы на подложке -->
-<div class="page-header-bar">
-  <h2 class="page-title">Новый пользователь</h2>
-  <nav class="breadcrumbs">
-    <a href="{% url 'adminpanel:dashboard' %}">Главная</a> →
-    <a href="{% url 'adminpanel:user_list' %}">Пользователи</a> →
-    <span class="current">Новый пользователь</span>
-  </nav>
-</div>
-
-<!-- Карточка формы -->
-<div class="form-card">
-  <form method="post" novalidate>
-    {% csrf_token %}
-
-    <div class="form-grid">
-      <!-- левая колонка -->
-      <div>
-        <div class="form-group">
-          <label for="{{ form.first_name.id_for_label }}">Имя</label>
-          {{ form.first_name }}
-        </div>
-        <div class="form-group">
-          <label for="{{ form.last_name.id_for_label }}">Фамилия</label>
-          {{ form.last_name }}
-        </div>
-        <div class="form-group">
-          <label for="{{ form.phone.id_for_label }}">Телефон</label>
-          {{ form.phone }}
-        </div>
-        <div class="form-group">
-          <label for="{{ form.role.id_for_label }}">Роль</label>
-          {{ form.role }}
-        </div>
-      </div>
-
-      <!-- правая колонка -->
-      <div>
-        <div class="form-group">
-          <label for="{{ form.email.id_for_label }}">Email (логин)</label>
-          {{ form.email }}
-        </div>
-
-        <div class="form-group">
-          <label for="{{ form.password1.id_for_label }}">Пароль</label>
-          <div class="password-row">
-            {{ form.password1 }}
-            <button type="button" class="btn btn-primary btn-gen" id="btn-gen-pass">Сгенерировать</button>
-            <button type="button" class="btn btn-secondary btn-eye" id="btn-toggle-pass" title="Показать/скрыть">👁</button>
-          </div>
-        </div>
-
-        <div class="form-group">
-          <label for="{{ form.password2.id_for_label }}">Повторить пароль</label>
-          {{ form.password2 }}
-        </div>
-
-        <div class="form-group">
-          <label for="{{ form.status.id_for_label }}">Статус</label>
-          {{ form.status }}
-        </div>
-      </div>
+    <!-- Шапка страницы на подложке -->
+    <div class="page-header-bar">
+        <h2 class="page-title">Новый пользователь</h2>
+        <nav class="breadcrumbs">
+            <a href="{% url 'adminpanel:dashboard' %}">Главная</a> →
+            <a href="{% url 'adminpanel:user_list' %}">Пользователи</a> →
+            <span class="current">Новый пользователь</span>
+        </nav>
     </div>
-
-    <div class="form-actions">
-      <a href="{% url 'adminpanel:user_list' %}" class="btn">Отменить</a>
-      <button type="submit" class="btn btn-success">Сохранить</button>
+    <!-- Карточка формы -->
+    <div class="form-card">
+        <form method="post" novalidate>
+            {% csrf_token %}
+            <div class="form-grid">
+                <!-- левая колонка -->
+                <div>
+                    <div class="form-group">
+                        <label for="{{ form.first_name.id_for_label }}">Имя</label>
+                        {{ form.first_name }}
+                    </div>
+                    <div class="form-group">
+                        <label for="{{ form.last_name.id_for_label }}">Фамилия</label>
+                        {{ form.last_name }}
+                    </div>
+                    <div class="form-group">
+                        <label for="{{ form.phone.id_for_label }}">Телефон</label>
+                        {{ form.phone }}
+                    </div>
+                    <div class="form-group">
+                        <label for="{{ form.role.id_for_label }}">Роль</label>
+                        {{ form.role }}
+                    </div>
+                </div>
+                <!-- правая колонка -->
+                <div>
+                    <div class="form-group">
+                        <label for="{{ form.email.id_for_label }}">Email (логин)</label>
+                        {{ form.email }}
+                    </div>
+                    <div class="form-group">
+                        <label for="{{ form.password1.id_for_label }}">Пароль</label>
+                        <div class="password-row">
+                            {{ form.password1 }}
+                            <button type="button" class="btn btn-primary btn-gen" id="btn-gen-pass">Сгенерировать</button>
+                            <button type="button"
+                                    class="btn btn-secondary btn-eye"
+                                    id="btn-toggle-pass"
+                                    title="Показать/скрыть">👁</button>
+                        </div>
+                    </div>
+                    <div class="form-group">
+                        <label for="{{ form.password2.id_for_label }}">Повторить пароль</label>
+                        {{ form.password2 }}
+                    </div>
+                    <div class="form-group">
+                        <label for="{{ form.status.id_for_label }}">Статус</label>
+                        {{ form.status }}
+                    </div>
+                </div>
+            </div>
+            <div class="form-actions">
+                <a href="{% url 'adminpanel:user_list' %}" class="btn">Отменить</a>
+                <button type="submit" class="btn btn-success">Сохранить</button>
+            </div>
+        </form>
     </div>
-  </form>
-</div>
-{% endblock %}
-
+{% endblock content% }
 {% block extra_js %}
-<script>
-(function(){
-  const genBtn = document.getElementById('btn-gen-pass');
-  const eyeBtn = document.getElementById('btn-toggle-pass');
-  const p1 = document.getElementById('{{ form.password1.id_for_label }}');
-  const p2 = document.getElementById('{{ form.password2.id_for_label }}');
+    <script>
+        (function () {
+            const genBtn = document.getElementById('btn-gen-pass');
+            const eyeBtn = document.getElementById('btn-toggle-pass');
+            const p1 = document.getElementById('{{ form.password1.id_for_label }}');
+            const p2 = document.getElementById('{{ form.password2.id_for_label }}');
 
-  function genPassword(len=12) {
-    const chars = 'ABCDEFGHJKLMNPQRSTUVWXYZabcdefghijkmnopqrstuvwxyz23456789!@#$%^&*';
-    let s=''; for (let i=0;i<len;i++) s += chars[Math.floor(Math.random()*chars.length)];
-    return s;
-  }
+            function genPassword(len = 12) {
+                const chars = 'ABCDEFGHJKLMNPQRSTUVWXYZabcdefghijkmnopqrstuvwxyz23456789!@#$%^&*';
+                let s = '';
+                for (let i = 0; i < len; i++) s += chars[Math.floor(Math.random() * chars.length)];
+                return s;
+            }
 
-  genBtn?.addEventListener('click', () => {
-    const pwd = genPassword();
-    if (p1) p1.value = pwd;
-    if (p2) p2.value = pwd;
-  });
+            genBtn?.addEventListener('click', () => {
+                const pwd = genPassword();
+                if (p1) p1.value = pwd;
+                if (p2) p2.value = pwd;
+            });
 
-  eyeBtn?.addEventListener('click', () => {
-    if (!p1 || !p2) return;
-    const t = p1.type === 'password' ? 'text' : 'password';
-    p1.type = t; p2.type = t;
-  });
-})();
-</script>
-{% endblock %}
-
-
-
-
-
-
-
-Спросить ChatGPT
+            eyeBtn?.addEventListener('click', () => {
+                if (!p1 || !p2) return;
+                const t = p1.type === 'password' ? 'text' : 'password';
+                p1.type = t;
+                p2.type = t;
+            });
+        })();
+    </script>
+{% endblock extra_js% }

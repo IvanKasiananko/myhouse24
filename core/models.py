@@ -9,12 +9,14 @@ class Permission(models.Model):
     def __str__(self):
         return self.name
 
+
 class Role(models.Model):
     name = models.CharField(max_length=100, unique=True)
-    permissions = models.ManyToManyField(Permission, blank=True, related_name='roles')
+    permissions = models.ManyToManyField(Permission, blank=True, related_name="roles")
 
     def __str__(self):
         return self.name
+
 
 class User(AbstractUser):
     patronymic = models.CharField(max_length=150, blank=True)
@@ -22,4 +24,6 @@ class User(AbstractUser):
     telegram = models.CharField(max_length=100, blank=True)
     viber = models.CharField(max_length=100, blank=True)
     birth_date = models.DateField(blank=True, null=True)
-    role = models.ForeignKey('core.Role', on_delete=models.SET_NULL, null=True, blank=True)
+    role = models.ForeignKey(
+        "core.Role", on_delete=models.SET_NULL, null=True, blank=True
+    )

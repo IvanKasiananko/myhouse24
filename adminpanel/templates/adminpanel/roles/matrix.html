@@ -1,110 +1,100 @@
 {% extends "adminpanel/admin_base.html" %}
 {% load static %}
-
-{% block page_title %}Роли{% endblock %}
-
+{% block page_title %}
+    Роли
+{% endblock page_title %}
 {% block extra_css %}
-<link rel="stylesheet" href="{% static 'adminpanel/css/roles.css' %}">
-{% endblock %}
-
+    <link rel="stylesheet" href="{% static 'adminpanel/css/roles.css' %}">
+{% endblock extra_css %}
 {% block content %}
-<div class="roles-page">
-
-  <!-- Шапка на подложке -->
-  <div class="roles-header-bar">
-    <h2 class="roles-title">Роли</h2>
-    <nav class="roles-breadcrumbs">
-      <a href="{% url 'adminpanel:dashboard' %}">Главная</a> → <span>Роли</span>
-    </nav>
-  </div>
-
-  <!-- Матрица Роль × Права -->
-  <form method="post" class="card roles-card" novalidate>
-    {% csrf_token %}
-
-    <div class="roles-table-wrap">
-      <table class="roles-table">
-        <thead>
-          <tr>
-            <th class="col-role">Роль</th>
-            {% for p in perms %}
-              <th class="col-perm">
-                <div class="perm-head">
-                  <span class="perm-name">{{ p.name }}</span>
-                  <!-- чекбокс «весь столбец» -->
-                  <label class="perm-check-all" title="Выделить столбец">
-                    <input type="checkbox" class="js-col-toggle" data-perm-id="{{ p.id }}">
-                  </label>
-                </div>
-              </th>
-            {% endfor %}
-          </tr>
-        </thead>
-
-        <tbody>
-          {% for r in roles %}
-          <tr>
-            <th class="role-name">
-              <a href="{% url 'adminpanel:role_edit' r.id %}">{{ r.name }}</a>
-            </th>
-
-            {% for p in perms %}
-            <td class="cell">
-              <label class="chk">
-                <input
-                  type="checkbox"
-                  name="perm_{{ r.id }}"
-                  value="{{ p.id }}"
-                  class="js-cell"
-                  data-role-id="{{ r.id }}"
-                  data-perm-id="{{ p.id }}"
-                  {% if p in r.permissions.all %}checked{% endif %}
-                >
-              </label>
-            </td>
-            {% endfor %}
-          </tr>
-          {% endfor %}
-        </tbody>
-      </table>
+    <div class="roles-page">
+        <!-- Шапка на подложке -->
+        <div class="roles-header-bar">
+            <h2 class="roles-title">Роли</h2>
+            <nav class="roles-breadcrumbs">
+                <a href="{% url 'adminpanel:dashboard' %}">Главная</a> → <span>Роли</span>
+            </nav>
+        </div>
+        <!-- Матрица Роль × Права -->
+        <form method="post" class="card roles-card" novalidate>
+            {% csrf_token %}
+            <div class="roles-table-wrap">
+                <table class="roles-table">
+                    <thead>
+                        <tr>
+                            <th class="col-role">Роль</th>
+                            {% for p in perms %}
+                                <th class="col-perm">
+                                    <div class="perm-head">
+                                        <span class="perm-name">{{ p.name }}</span>
+                                        <!-- чекбокс «весь столбец» -->
+                                        <label class="perm-check-all" title="Выделить столбец">
+                                            <input type="checkbox" class="js-col-toggle" data-perm-id="{{ p.id }}">
+                                        </label>
+                                    </div>
+                                </th>
+                            {% endfor %}
+                        </tr>
+                    </thead>
+                    <tbody>
+                        {% for r in roles %}
+                            <tr>
+                                <th class="role-name">
+                                    <a href="{% url 'adminpanel:role_edit' r.id %}">{{ r.name }}</a>
+                                </th>
+                                {% for p in perms %}
+                                    <td class="cell">
+                                        <label class="chk">
+                                            <input type="checkbox"
+                                                   name="perm_{{ r.id }}"
+                                                   value="{{ p.id }}"
+                                                   class="js-cell"
+                                                   data-role-id="{{ r.id }}"
+                                                   data-perm-id="{{ p.id }}"
+                                                   {% if p in r.permissions.all %}checked{% endif %}>
+                                        </label>
+                                    </td>
+                                {% endfor %}
+                            </tr>
+                        {% endfor %}
+                    </tbody>
+                </table>
+            </div>
+            <div class="roles-actions">
+                <a href="{% url 'adminpanel:dashboard' %}" class="btn">Отменить</a>
+                <button type="submit" class="btn btn-success">Сохранить</button>
+            </div>
+        </form>
     </div>
-
-    <div class="roles-actions">
-      <a href="{% url 'adminpanel:dashboard' %}" class="btn">Отменить</a>
-      <button type="submit" class="btn btn-success">Сохранить</button>
-    </div>
-  </form>
-
-</div>
-{% endblock %}
-
+{% endblock content %}
 {% block extra_js %}
-<script>
-(function(){
-  // включить/выключить весь столбец по заголовочному чекбоксу
-  document.querySelectorAll('.js-col-toggle').forEach(col => {
-    col.addEventListener('change', () => {
-      const pid = col.dataset.permId;
-      document.querySelectorAll('.js-cell[data-perm-id="'+pid+'"]').forEach(cb => {
-        cb.checked = col.checked;
-      });
-    });
-  });
+    <script>
+        (function () {
+            // включить/выключить весь столбец по заголовочному чекбоксу
+            document.querySelectorAll('.js-col-toggle').forEach(col => {
+                col.addEventListener('change', () => {
+                    const pid = col.dataset.permId;
+                    document.querySelectorAll('.js-cell[data-perm-id="' + pid + '"]').forEach(cb => {
+                        cb.checked = col.checked;
+                    });
+                });
+            });
 
-  // синхронизация состояния «весь столбец», когда кликают по ячейкам
-  function syncColumn(pid){
-    const cells = Array.from(document.querySelectorAll('.js-cell[data-perm-id="'+pid+'"]'));
-    if (!cells.length) return;
-    const allChecked = cells.every(c => c.checked);
-    const head = document.querySelector('.js-col-toggle[data-perm-id="'+pid+'"]');
-    if (head) head.checked = allChecked;
-  }
-  document.querySelectorAll('.js-cell').forEach(cb => {
-    cb.addEventListener('change', () => syncColumn(cb.dataset.permId));
-  });
+            // синхронизация состояния «весь столбец», когда кликают по ячейкам
+            function syncColumn(pid) {
+                const cells = Array.from(document.querySelectorAll('.js-cell[data-perm-id="' + pid + '"]'));
+                if (!cells.length) return;
+                const allChecked = cells.every(c => c.checked);
+                const head = document.querySelector('.js-col-toggle[data-perm-id="' + pid + '"]');
+                if (head) head.checked = allChecked;
+            }
 
-  // первичная инициализация «весь столбец»
-  document.querySelectorAll('.js-col-toggle').forEach(h => syncColumn(h.dataset.permId));
-})();
-</script>
-{% endblock %}
+            document.querySelectorAll('.js-cell').forEach(cb => {
+                cb.addEventListener('change', () => syncColumn(cb.dataset.permId));
+            });
+
+            // первичная инициализация «весь столбец»
+            document.querySelectorAll('.js-col-toggle').forEach(h => syncColumn(h.dataset.permId));
+        })();
+    </script>
+{% endblock extra_js %}
