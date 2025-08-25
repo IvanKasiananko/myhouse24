@@ -1,0 +1,36 @@
+{% extends "adminpanel/admin_base.html" %}
+{% load static %}
+{% block title %}
+    Платёжные реквизиты
+{% endblock title %}
+{% block page_title %}
+    Платёжные реквизиты
+{% endblock page_title %}
+{% block content %}
+    <div class="container mt-4 w-720">
+        <h2 class="mb-4">Платёжные реквизиты</h2>
+        <form method="post" novalidate>
+            {% csrf_token %}
+            <div class="mb-4">
+                <h4 class="fw-semibold mb-2">Название компании</h4>
+                {{ form.name_company }}
+            </div>
+            <div class="mb-4">
+                <h4 class="fw-semibold mb-2">Информация</h4>
+                {{ form.payment_details }}
+            </div>
+            <div class="d-flex justify-content-end gap-2 mt-4">
+                <button type="button" class="btn btn-secondary" onclick="resetForm()">Отменить</button>
+                <button type="submit" class="btn btn-success">Сохранить</button>
+            </div>
+        </form>
+    </div>
+    <script>
+        function resetForm() {
+            const form = document.querySelector("form");
+            if (form) {
+                form.reset();
+            }
+        }
+    </script>
+{% endblock content %}

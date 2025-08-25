@@ -1,0 +1,64 @@
+{% extends "adminpanel/admin_base.html" %}
+{% block page_title %}
+    Редактирование пользователя
+{% endblock page_title %}
+{% block content %}
+    <div class="users-edit">
+        <div class="d-flex align-items-center justify-content-between mb-3">
+            <div>
+                <h2 class="mb-1">Редактирование пользователя</h2>
+                <div class="text-muted small">
+                    <a href="{% url 'adminpanel:user_list' %}">Пользователи</a> → редактирование
+                </div>
+            </div>
+            <a href="{% url 'adminpanel:user_list' %}"
+               class="btn btn-outline-secondary">Назад к списку</a>
+        </div>
+        <div class="card">
+            <div class="card-body">
+                <form method="post" novalidate>
+                    {% csrf_token %}
+                    {% if form.non_field_errors %}<div class="alert alert-danger">{{ form.non_field_errors }}</div>{% endif %}
+                    <div class="row g-3">
+                        <div class="col-md-6">
+                            <label class="form-label">Имя</label>
+                            {{ form.first_name }}
+                            {{ form.first_name.errors }}
+                        </div>
+                        <div class="col-md-6">
+                            <label class="form-label">Фамилия</label>
+                            {{ form.last_name }}
+                            {{ form.last_name.errors }}
+                        </div>
+                        <div class="col-md-6">
+                            <label class="form-label">Email (логин)</label>
+                            {{ form.email }}
+                            {{ form.email.errors }}
+                        </div>
+                        <div class="col-md-6">
+                            <label class="form-label">Телефон</label>
+                            {{ form.phone }}
+                            {{ form.phone.errors }}
+                        </div>
+                        <div class="col-md-6">
+                            <label class="form-label">Роль</label>
+                            {{ form.role }}
+                            {{ form.role.errors }}
+                        </div>
+                        <div class="col-md-6 d-flex align-items-center">
+                            <div class="form-check mt-4">
+                                {{ form.is_active }}
+                                <label class="form-check-label" for="{{ form.is_active.id_for_label }}">Активен</label>
+                            </div>
+                        </div>
+                    </div>
+                    <div class="mt-4 d-flex gap-2">
+                        <button class="btn btn-success" type="submit">Сохранить</button>
+                        <a class="btn btn-outline-secondary"
+                           href="{% url 'adminpanel:user_list' %}">Отмена</a>
+                    </div>
+                </form>
+            </div>
+        </div>
+    </div>
+{% endblock content %}

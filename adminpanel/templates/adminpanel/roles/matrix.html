@@ -40,7 +40,8 @@
                         {% for r in roles %}
                             <tr>
                                 <th class="role-name">
-                                    <a href="{% url 'adminpanel:role_edit' r.id %}">{{ r.name }}</a>
+                                    {{ r.name }}
+                                    {#                                    <a href="{% url 'adminpanel:role_edit' r.id %}">{{ r.name }}</a>#}
                                 </th>
                                 {% for p in perms %}
                                     <td class="cell">

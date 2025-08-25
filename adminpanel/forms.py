@@ -1,4 +1,6 @@
 from django import forms
+
+from billing.models import PaymentDetails
 from core.models import User
 
 STATUS_CHOICES = [
@@ -54,6 +56,52 @@ class UserCreateForm(forms.ModelForm):
         user.is_active = status == "active"
         user.username = user.email or user.username
         user.set_password(self.cleaned_data["password1"])
+        user.is_staff = True
         if commit:
             user.save()
         return user
+
+
+class UserUpdateForm(forms.ModelForm):
+    is_active = forms.BooleanField(label="Активен", required=False)
+
+    class Meta:
+        model = User
+        fields = ["first_name", "last_name", "email", "phone", "role", "is_active"]
+        widgets = {
+            "first_name": forms.TextInput(attrs={"class": "form-control"}),
+            "last_name": forms.TextInput(attrs={"class": "form-control"}),
+            "email": forms.EmailInput(attrs={"class": "form-control"}),
+            "phone": forms.TextInput(attrs={"class": "form-control"}),
+            "role": forms.Select(attrs={"class": "form-select"}),
+        }
+        labels = {
+            "first_name": "Имя",
+            "last_name": "Фамилия",
+            "email": "Email (логин)",
+            "phone": "Телефон",
+            "role": "Роль",
+        }
+
+    def save(self, commit=True):
+        user = super().save(commit=False)
+        # гарантируем что это персонал
+        user.is_staff = True
+        # username уравняем с email, если пусто
+        if user.email and (not user.username):
+            user.username = user.email
+        if commit:
+            user.save()
+        return user
+
+
+class PaymentDetailsForm(forms.ModelForm):
+    class Meta:
+        model = PaymentDetails
+        fields = ["name_company", "payment_details"]
+        widgets = {
+            "name_company": forms.TextInput(attrs={"class": "form-control"}),
+            "payment_details": forms.Textarea(
+                attrs={"class": "form-control", "rows": 5}
+            ),
+        }

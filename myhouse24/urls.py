@@ -23,7 +23,7 @@ urlpatterns = [
     # path('admin/', admin.site.urls),           # Админка Django
     path("", include("pages.urls")),  # Публичный сайт
     path("cabinet/", include("cabinet.urls")),  # Личный кабинет пользователя
-    path("adminpanel/", include("adminpanel.urls")),  # Кастомная админ-панель
+    path("adminpanel/", include("adminpanel.urls")),
 ]
 
 if settings.DEBUG:
