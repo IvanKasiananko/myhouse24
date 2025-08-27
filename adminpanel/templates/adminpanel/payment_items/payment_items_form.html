@@ -1,0 +1,42 @@
+{% extends "adminpanel/admin_base.html" %}
+{% block title %}
+    Новая статья
+{% endblock title %}
+{% block page_title %}
+    Новая статья
+{% endblock page_title %}
+{% block content %}
+    <div class="page-header-line">
+        <h2 class="mb-0">Новая статья</h2>
+        <div class="page-breadcrumbs">
+            <span>🏠</span>
+            <a href="{% url 'adminpanel:dashboard' %}">Главная</a>
+            <span>›</span>
+            <a href="{% url 'adminpanel:payment_items_list' %}">Статьи приходов/расходов</a>
+            <span>›</span>
+            <span class="text-muted">Новая статья</span>
+        </div>
+    </div>
+    <div class="box box-primary">
+        <form method="post" novalidate>
+            {% csrf_token %}
+            <div class="box-body">
+                <div class="form-group">
+                    <label for="id_name">Название</label>
+                    {{ form.name }}
+                </div>
+                <div class="form-group">
+                    <label for="id_operation_type">Приход/расход</label>
+                    {{ form.operation_type }}
+                </div>
+            </div>
+            <div class="box-footer">
+                <div class="form-actions">
+                    <a href="{% url 'adminpanel:payment_items_list' %}"
+                       class="btn btn-default">Отменить</a>
+                    <button type="submit" class="btn btn-success">Сохранить</button>
+                </div>
+            </div>
+        </form>
+    </div>
+{% endblock content %}

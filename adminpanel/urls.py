@@ -1,11 +1,45 @@
 from django.urls import path
 from . import views
+from .views import (
+    PaymentItemListView,
+    PaymentItemCreateView,
+    HouseListView,
+    HouseCreateView,
+    HouseDetailView,
+    HouseDeleteView,
+    HouseUpdateView,
+)
 
 app_name = "adminpanel"
 
 urlpatterns = [
+    path("admin/house/index", HouseListView.as_view(), name="house_index"),
+    path("admin/house/create", HouseCreateView.as_view(), name="house_create"),
+    path("admin/house/<int:pk>", HouseDetailView.as_view(), name="house_detail"),
+    path("admin/house/<int:pk>/edit", HouseUpdateView.as_view(), name="house_edit"),
+    path("admin/house/<int:pk>/delete", HouseDeleteView.as_view(), name="house_delete"),
     path(
-        "users/", views.UsersPageView1.as_view(), name="user_list"
+        "transaction-purpose/<int:pk>/edit",
+        views.PaymentItemUpdateView.as_view(),
+        name="payment_items_edit",
+    ),
+    path(
+        "transaction-purpose/<int:pk>/delete",
+        views.PaymentItemDeleteView.as_view(),
+        name="payment_items_delete",
+    ),
+    path(
+        "transaction-purpose/index",
+        PaymentItemListView.as_view(),
+        name="payment_items_list",
+    ),
+    path(
+        "transaction-purpose/create",
+        PaymentItemCreateView.as_view(),
+        name="payment_items_create",
+    ),
+    path(
+        "users/", views.UsersPageView.as_view(), name="user_list"
     ),  # страница со столом
     path("users/<int:pk>/edit/", views.UserUpdateView.as_view(), name="user_edit"),
     path("users/<int:pk>/delete/", views.UserDeleteView.as_view(), name="user_delete"),

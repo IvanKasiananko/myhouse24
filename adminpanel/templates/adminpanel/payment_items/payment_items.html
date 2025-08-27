@@ -1,0 +1,85 @@
+{% extends "adminpanel/admin_base.html" %}
+{% block title %}
+    Статьи приходов/расходов
+{% endblock title %}
+{% block page_title %}
+    Статьи приходов/расходов
+{% endblock page_title %}
+{% block content %}
+    <div class="page-header-line">
+        <h2 class="mb-0">Статьи приходов/расходов</h2>
+        <div class="page-actions">
+            <div class="page-breadcrumbs">
+                <span>🏠</span>
+                <a href="{% url 'adminpanel:dashboard' %}">Главная</a>
+                <span>›</span>
+                <span class="text-muted">Статьи приходов/расходов</span>
+            </div>
+            <a href="{% url 'adminpanel:payment_items_create' %}"
+               class="btn btn-success">Добавить статью</a>
+        </div>
+    </div>
+    <div class="box box-primary">
+        <div class="box-body no-padding">
+            <table class="table table-hover table-striped mb-0 table-payment-items">
+                <thead>
+                    <tr>
+                        <th>Название</th>
+                        <th>Приход/расход</th>
+                        <th class="table-actions-head">Действия</th>
+                    </tr>
+                </thead>
+                <tbody>
+                    {% for item in items %}
+                        <tr>
+                            <td>{{ item.name }}</td>
+                            <td>
+                                {% if item.operation_type == "Приход" %}
+                                    <span class="text-success">Приход</span>
+                                {% else %}
+                                    <span class="text-danger">Расход</span>
+                                {% endif %}
+                            </td>
+                            <td class="table-actions">
+                                <a href="{% url 'adminpanel:payment_items_edit' item.id %}"
+                                   class="btn btn-default btn-icon btn-xs"
+                                   aria-label="Редактировать"
+                                   title="Редактировать">
+                                    <!-- pencil -->
+                                    <svg class="icon"
+                                         viewBox="0 0 24 24"
+                                         fill="currentColor"
+                                         aria-hidden="true">
+                                        <path d="M3 17.25V21h3.75L17.81 9.94l-3.75-3.75L3 17.25zm14.71-9.96a1 1 0 0 0 0-1.41l-1.59-1.59a1 1 0 0 0-1.41 0l-1.13 1.13 3.75 3.75 1.38-1.88z" />
+                                    </svg>
+                                </a>
+                                <form method="post"
+                                      action="{% url 'adminpanel:payment_items_delete' item.id %}"
+                                      class="d-inline">
+                                    {% csrf_token %}
+                                    <button type="submit"
+                                            class="btn btn-default btn-icon btn-xs"
+                                            aria-label="Удалить"
+                                            title="Удалить"
+                                            onclick="return confirm('Удалить статью «{{ item.name }}»?');">
+                                        <!-- trash -->
+                                        <svg class="icon"
+                                             viewBox="0 0 24 24"
+                                             fill="currentColor"
+                                             aria-hidden="true">
+                                            <path d="M9 3h6l1 2h4v2H4V5h4l1-2zm1 6h2v10h-2V9zm4 0h2v10h-2V9z" />
+                                        </svg>
+                                    </button>
+                                </form>
+                            </td>
+                        </tr>
+                    {% empty %}
+                        <tr>
+                            <td colspan="3">Нет данных</td>
+                        </tr>
+                    {% endfor %}
+                </tbody>
+            </table>
+        </div>
+    </div>
+{% endblock content %}

@@ -1,5 +1,6 @@
 from django.contrib.auth.models import AbstractUser
 from django.db import models
+from django.conf import settings
 
 
 class Permission(models.Model):
@@ -27,3 +28,34 @@ class User(AbstractUser):
     role = models.ForeignKey(
         "core.Role", on_delete=models.SET_NULL, null=True, blank=True
     )
+
+
+class House(models.Model):
+    house_name = models.CharField(max_length=255)
+    address = models.CharField(max_length=255)  # исправлено: adress -> address
+    staff = models.ManyToManyField(settings.AUTH_USER_MODEL)
+
+
+class Section(models.Model):
+    section_name = models.CharField(max_length=255)
+    house = models.ForeignKey(House, on_delete=models.CASCADE, related_name="sections")
+
+
+class Floor(models.Model):
+    number = models.IntegerField()
+    section = models.ForeignKey(
+        Section, on_delete=models.CASCADE, related_name="floors"
+    )
+
+
+class Flat(models.Model):
+    number_flat = models.IntegerField()
+    square = models.FloatField()
+    floor = models.ForeignKey(Floor, on_delete=models.CASCADE, related_name="flats")
+    user = models.ForeignKey(settings.AUTH_USER_MODEL, on_delete=models.PROTECT)
+    tariff = models.ForeignKey("billing.Tariff", on_delete=models.PROTECT)
+
+
+class Gallery(models.Model):  # исправлено: Galery -> Gallery
+    house = models.ForeignKey(House, on_delete=models.CASCADE, related_name="gallery")
+    image = models.ImageField(upload_to="core/gallery/")
